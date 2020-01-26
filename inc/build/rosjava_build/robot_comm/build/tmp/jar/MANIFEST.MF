@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Export-Package: robot_comm;version="0.0.0";uses:="geometry_msgs,org.ro
+ s.internal.message"
+Bundle-Version: 0.0.0
+Tool: Bnd-2.1.0.20130426-122213
+Bundle-Name: robot_comm
+Bnd-LastModified: 1543329165000
+Created-By: 1.7.0_60 (Oracle Corporation)
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.ros.rosjava_messages.robot_comm
+Import-Package: geometry_msgs;version="[1.10,2)",org.ros.internal.mess
+ age
+

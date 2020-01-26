@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="False" />
+  <param name="use_gui" value="$(arg gui)"/>
+
+  <include file="$(find realsense2_camera)/launch/rs_rgbd.launch" />
+
+  <param name="shape_description" textfile="$(find core)/urdf/m.urdf" />
+  <param name="shape2_description" textfile="$(find core)/urdf/i.urdf" />
+  <param name="shape3_description" textfile="$(find core)/urdf/t.urdf" />
+  <!-- <include file="$(find robot_node)/launch/mcubeSystem.launch" /> -->
+
+  <node pkg="tf" type="static_transform_publisher" name="shape_broadcaster" args="0 0 0 0 0 0 shape world 100" />
+  <node pkg="tf" type="static_transform_publisher" name="shape2_broadcaster" args="0 0 0 0 0 0 shape2 world 100" />
+  <node pkg="tf" type="static_transform_publisher" name="shape3_broadcaster" args="0 0 0 0 0 0 shape3 world 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.0300 0.0904 0.6530 0.9692 -0.00029 -0.0159 0.2455 camera_color_optical_frame world 100" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find core)/rviz/setup_mit.rviz" />
+</launch>
