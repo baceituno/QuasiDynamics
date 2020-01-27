@@ -13,7 +13,7 @@ task = square_push();
 
 % infers the primitive
 pre = MixedIntegerContactPlacementProblem(task,1,2)
-pre.McCormick = 1;
+pre.McCormick = 4;
 pre.M = 12;
 
 % animation_shape(task,false)

@@ -41,7 +41,7 @@ classdef ROSHelper < handle
 		end
 
 		function out = setCartesian(obj, arm, x, y, z, q0, qx, qy, qz)
-			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_SetCartesian'));
+			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_SetCartesianA'));
 			req = rosmessage(serv);
 			req.X = x;
 			req.Y = y;
@@ -199,42 +199,55 @@ classdef ROSHelper < handle
 		end
 
 		% Specific motions
-		function setHomePlanar(obj)
+		function setHomePlanar(obj, angleZ, handpose)
 			obj.clearJointBuffers();
-			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, -124.06, -98.72);
-			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, 124.06, 98.60);
+			obj.addJointBuffer(1, 79.99, -99.71, 35.63, -143.85, 90.8, 40.76, -66.45);
+			obj.addJointBuffer(2, -79.49, -99.73, 35.87, 143.95, 90.89, -39.62, 66.36);
 			% Twice because joint buffers require at least 2 orders (dummy)
-			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, -124.06, -98.72);
-			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, 124.06, 98.60);
+			obj.addJointBuffer(1, 79.99, -99.71, 35.63, -143.85, 90.8, 40.76, -66.45);
+			obj.addJointBuffer(2, -79.49, -99.73, 35.87, 143.95, 90.89, -39.62, 66.36);
 			obj.executeSimJointBuffers();
+
+			pause(2.0);
+
+			obj.clearBuffers();
+% 			get1 = obj.getCartesian(1); 
+% 			get2 = obj.getCartesian(2);
+% 			[qwR, qxR, qyR, qzR] = obj.quatFromAngleRespectToZ(1, angleZ);
+% 			[qwL, qxL, qyL, qzL] = obj.quatFromAngleRespectToZ(2, angleZ);
+% 			obj.addBuffer(1, 400, -152, 175, 0.0077, -0.0048, -0.9999, 0.007, 0);
+% 			obj.addBuffer(2, 399.9, 152.33, 174.58, 0.0105, -0.0034, -0.9999, -0.0029, 0);
+% 			obj.executeSimBuffers(true);
 		end
 
 		function setHomeSagittal(obj, angleZ)
 			obj.clearJointBuffers();
-			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, -54.06, -98.72);
-			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, 54.06, 98.60);
+			obj.addJointBuffer(1, 79.99, -99.71, 35.63, -143.85, 90.8, 40.76, -66.45);
+			obj.addJointBuffer(2, -79.49, -99.73, 35.87, 143.95, 90.89, -39.62, 66.36);
 			% Twice because joint buffers require at least 2 orders (dummy)
-			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, -54.06, -98.72);
-			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, 54.06, 98.60);
+			obj.addJointBuffer(1, 79.99, -99.71, 35.63, -143.85, 90.8, 40.76, -66.45);
+			obj.addJointBuffer(2, -79.49, -99.73, 35.87, 143.95, 90.89, -39.62, 66.36);
 			obj.executeSimJointBuffers();
+
+			pause(5.0);
+
+			angleZ = angleZ - pi/2;
+
+			obj.clearBuffers();
+			get1 = obj.getCartesian(1);
+			get2 = obj.getCartesian(2);
+			[qwR, qxR, qyR, qzR] = obj.quatFromAngleRespectToZ(1, angleZ);
+			[qwL, qxL, qyL, qzL] = obj.quatFromAngleRespectToZ(2, angleZ);
+			obj.addBuffer(1, get1.X+10, get1.Y, get1.Z, qwR, qxR, qyR, qzR, 0);
+			obj.addBuffer(2, get2.X-10, get2.Y, get2.Z, qwL, qxL, qyL, qzL, 0);
+			obj.executeSimBuffers(true);
 		end
 
 		function out = setXY(obj, arm, x, y)
 			getret = obj.getCartesian(arm);
 			out = obj.setCartesian(arm, x, y, getret.Z, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
-        end
-
-        function out = setXYZ(obj, arm, x, y, z)
-			getret = obj.getCartesian(arm);
-			out = obj.setCartesian(arm, x, y, z, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
-        end
-        
-        function out = setdXYZ(obj, arm, dx, dy, dz)
-			getret = obj.getCartesian(arm);
-			out = obj.setCartesian(arm, getret.X + dx, getret.Y + dy, getret.Z + dz, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
-        
 		function setArmDeltaXYZ(obj, arm, dx, dy, dz)
 			obj.clearBuffers();
 			get1 = obj.getCartesian(arm);
