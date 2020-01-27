@@ -23,7 +23,6 @@ classdef ROSHelper < handle
 			obj.angleZR = 0;
 			obj.angleZL = 0;
 			obj.handH = 132;
-			addpath('./inc');
 		end
 		
 		function setAngleZR(obj, theta)
@@ -232,6 +231,29 @@ classdef ROSHelper < handle
         function out = setdXYZ(obj, arm, dx, dy, dz)
 			getret = obj.getCartesian(arm);
 			out = obj.setCartesian(arm, getret.X + dx, getret.Y + dy, getret.Z + dz, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+		end
+
+		function out = setInitialPositionPlanar(obj, x1, y1, x2, y2)
+			getret = obj.getCartesian(1);
+			out = obj.setCartesian(1, 400 + y1, -63.83 + x1, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+			getret = obj.getCartesian(2);
+			out = obj.setCartesian(2, 400 + y2, 63.83 + x2, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+		end
+
+		function out = setInitialPositionSagittal(obj, x1, y1, x2, y2)
+			% TODO: implement function
+			% getret = obj.getCartesian(1);
+			% out = obj.setCartesian(1, 400 + y1, -63.83 + x1, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+			% getret = obj.getCartesian(2);
+			% out = obj.setCartesian(2, 400 + y2, 63.83 + x2, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+		end
+
+
+		function out = setdTraj(obj, dx1, dy1, dz1, dx2, dy2, dz2)
+			getret = obj.getCartesian(1);
+			out = obj.setCartesian(1, getret.X + dx1, getret.Y + dy1, getret.Z + dz1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			getret = obj.getCartesian(2);
+			out = obj.setCartesian(2, getret.X + dx2, getret.Y + d2, getret.Z + dz2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
         

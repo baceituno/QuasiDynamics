@@ -4,7 +4,7 @@ clear all; close all; clc;
 task = square_line();
 
 % infers the primitive
-pre = MixedIntegerContactPlacementProblem(task,1,2)
+pre = MixedIntegerContactPlacementProblem(task,1,1)
 pre.McCormick = 1;
 pre.M = 4;
 
