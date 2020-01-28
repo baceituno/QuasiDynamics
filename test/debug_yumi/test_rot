@@ -1,0 +1,8 @@
+help = ROSHelper();
+traj = load('./data/mats/p_rot.mat')*500;
+p1 = traj(:,1,:,:);
+p2 = traj(:,2,:,:);
+
+dp1 = [diff(p1(1,:,:,:));diff(p1(2,:,:,:))];
+dp2 = [diff(p2(1,:,:,:));diff(p2(2,:,:,:))];
+help.setInitialPositionPlanar(p1(1,1),p1(2,1),p2(1,1),p2(2,1))

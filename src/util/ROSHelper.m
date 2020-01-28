@@ -208,13 +208,13 @@ classdef ROSHelper < handle
 			obj.executeSimJointBuffers();
 		end
 
-		function setHomeSagittal(obj, angleZ)
+		function setHomeSagittal(obj)
 			obj.clearJointBuffers();
-			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, -54.06, -98.72);
-			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, 54.06, 98.60);
+			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, 55.06, -98.72);
+			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, -55.06, 98.60);
 			% Twice because joint buffers require at least 2 orders (dummy)
-			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, -54.06, -98.72);
-			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, 54.06, 98.60);
+			obj.addJointBuffer(1, 74.94, -44.11, 22.62, -100.38, 21.99, 55.06, -98.72);
+			obj.addJointBuffer(2, -74.62, -44.12, 23, 101.05, 22.22, -55.06, 98.60);
 			obj.executeSimJointBuffers();
 		end
 
@@ -235,17 +235,16 @@ classdef ROSHelper < handle
 
 		function out = setInitialPositionPlanar(obj, x1, y1, x2, y2)
 			getret = obj.getCartesian(1);
-			out = obj.setCartesian(1, 400 + y1, -63.83 + x1, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(1, 397 + x1, -63.83 + y1, 225, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 			getret = obj.getCartesian(2);
-			out = obj.setCartesian(2, 400 + y2, 63.83 + x2, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(2, 400 + x2, 63.83 + y2, 225, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
 		function out = setInitialPositionSagittal(obj, x1, y1, x2, y2)
-			% TODO: implement function
-			% getret = obj.getCartesian(1);
-			% out = obj.setCartesian(1, 400 + y1, -63.83 + x1, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
-			% getret = obj.getCartesian(2);
-			% out = obj.setCartesian(2, 400 + y2, 63.83 + x2, 175, getret.Q0 + 50, getret.Qx, getret.Qy, getret.Qz);
+			getret = obj.getCartesian(1);
+			out = obj.setCartesian(1, 397, -63.83 + x1, 175 + 10.6 + y1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			getret = obj.getCartesian(2);
+			out = obj.setCartesian(2, 400, 63.83 + x2, 175 + 10.6 + y2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
 
@@ -253,7 +252,7 @@ classdef ROSHelper < handle
 			getret = obj.getCartesian(1);
 			out = obj.setCartesian(1, getret.X + dx1, getret.Y + dy1, getret.Z + dz1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 			getret = obj.getCartesian(2);
-			out = obj.setCartesian(2, getret.X + dx2, getret.Y + d2, getret.Z + dz2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(2, getret.X + dx2, getret.Y + dy2, getret.Z + dz2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
         
