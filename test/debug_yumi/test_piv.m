@@ -36,9 +36,19 @@ disp('place object pls :)')
 pause()
 
 for t = 1:T-1
-    for c = 1:N_c
+    for c = N_c:-1:1
         help.setdXYZ(c,0,dp(1,c,1,t),dp(2,c,1,t));
-        pause()
+        pause(0.1)
+    end
+    % pause(0.1)
+end
+
+pause()
+
+for t = T-1:-1:1
+    for c = 1:N_c
+        help.setdXYZ(c,0,-dp(1,c,1,t),-dp(2,c,1,t));
+        pause(0.1)
     end
     % pause(0.1)
 end

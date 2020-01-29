@@ -593,7 +593,7 @@ classdef MixedIntegerContactPlacementProblem < Quad_MixedIntegerConvexProgram
       obj = obj.addVariable('weight_ext', 'C', [2, obj.object.nv, obj.N_T], 0, 0.5);
 
       % big-M
-      M = 100;
+      M = 10;
 
       % activation of forces when in contact
       for t = 1:obj.N_T

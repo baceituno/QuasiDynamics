@@ -8,7 +8,7 @@ help.setHomePlanar()
 disp('home')
 pause()
 
-p = load('./data/mats/p_rot.mat').traj*500;
+p = load('./data/mats/p_curv.mat').traj*500;
 N_c = size(p,2);
 T = size(p,4);
 
@@ -28,17 +28,34 @@ end
 pause()
 
 % brings hands down
-for c = 1:N_c
-    help.setdXYZ(c,0,0,-50)
-end
+% for c = 1:N_c
+%     help.setdXYZ(c,0,0,-50)
+% end
+
+help.adddXYZ(0,0,-50,0,0,-50)
 
 disp('place object pls :)')
 pause()
+disp('Executing...')
+
+% for t = 1:T-1
+%     for c = 1:N_c
+%         help.setdXYZ(c,dp(1,c,1,t),dp(2,c,1,t),0);
+%         pause(0.1)
+%     end
+%     % pause()
+% end
 
 for t = 1:T-1
-    for c = 1:N_c
-        help.setdXYZ(c,dp(1,c,1,t),dp(2,c,1,t),0);
-        pause(0.1)
+    if N_c == 2
+        help.adddXYZ(dp(1,1,1,t),dp(2,1,1,t),0,dp(1,2,1,t),dp(2,2,1,t),0)
+    else
+        help.adddXYZ(dp(1,1,1,t),dp(2,1,1,t),0,0,0,0)
     end
-    % pause()
+    % pause(0.1)
 end
+
+
+pause()
+
+help.adddXYZ(0,0,50,0,0,50)

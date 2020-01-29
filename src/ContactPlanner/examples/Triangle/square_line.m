@@ -24,8 +24,8 @@ classdef square_line
 			% trajectory
 
 			x = linspace(0,0,5);
-			y = linspace(0,0.1,5);
-			th = [linspace(0,pi/6,5)];
+			y = linspace(0,0,5);
+			th = [linspace(0,-pi/2,5)];
 			NT = size(th,2);
 
 			obj.traj.r = [x;y;th];
@@ -52,7 +52,7 @@ classdef square_line
 				obj.ext_f{v}.fc2 = zeros(2,NT);
 				obj.ext_f{v}.jac = zeros(2,3,NT);
 
-				for t = 1:NT
+				for t = 2:NT-1
 					% computes the jacobian and the velocity vector
 					vs = [-sin(obj.traj.r(3,t)),-cos(obj.traj.r(3,t));cos(obj.traj.r(3,t)),-sin(obj.traj.r(3,t))]*obj.v(:,v);
 					vel = [eye(2),vs]*obj.traj.dr(:,t);

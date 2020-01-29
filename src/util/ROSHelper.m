@@ -75,7 +75,7 @@ classdef ROSHelper < handle
 			out = call(serv, req);
 		end
 
-		function out = addBuffer(obj, arm, x, y, z, q0, qx, qy, qz, handpose)
+		function out = addBuffer(obj, arm, x, y, z, q0, qx, qy, qz)
 			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_AddBuffer'));
 			req = rosmessage(serv);
 			req.X = x;
@@ -103,8 +103,8 @@ classdef ROSHelper < handle
 		function out = executeSimBuffer(obj, arm, usehandpose)
 			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_ExecuteBuffer'));
 			req = rosmessage(serv);
-% 			req.Simultaneous = true;
-% 			req.UseHandPose = usehandpose;
+			req.Simultaneous = true;
+			req.UseHandPose = usehandpose;
 			out = call(serv, req);
 		end
 
@@ -140,7 +140,7 @@ classdef ROSHelper < handle
 		function out = executeSimJointBuffer(obj, arm)
 			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_ExecuteJointPosBuffer'));
 			req = rosmessage(serv);
-% 			req.Simultaneous = true;
+			req.Simultaneous = 1;
 			out = call(serv, req);
 		end
 
@@ -233,18 +233,26 @@ classdef ROSHelper < handle
 			out = obj.setCartesian(arm, getret.X + dx, getret.Y + dy, getret.Z + dz, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
+		function out = adddXYZ(obj, dx1, dy1, dz1, dx2, dy2, dz2)
+			obj.clearBuffers();
+			getret = obj.getCartesian(1);
+			out = obj.setCartesian(1, getret.X + dx1, getret.Y + dy1, getret.Z + dz1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			getret = obj.getCartesian(2);
+			out = obj.setCartesian(2, getret.X + dx2, getret.Y + dy2, getret.Z + dz2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+		end
+
 		function out = setInitialPositionPlanar(obj, x1, y1, x2, y2)
 			getret = obj.getCartesian(1);
-			out = obj.setCartesian(1, 397 + x1, -63.83 + y1, 225, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(1, 395  + x1, -67.5 + y1, 225, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 			getret = obj.getCartesian(2);
-			out = obj.setCartesian(2, 400 + x2, 63.83 + y2, 225, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(2, 403 + x2, 67.5 + y2, 218, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
 		function out = setInitialPositionSagittal(obj, x1, y1, x2, y2)
 			getret = obj.getCartesian(1);
-			out = obj.setCartesian(1, 397, -63.83 + x1, 175 + 10.6 + y1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(1, 392, -67.5 + x1 - 10.6 + 1.1, 175 + 10.6 + y1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 			getret = obj.getCartesian(2);
-			out = obj.setCartesian(2, 400, 63.83 + x2, 175 + 10.6 + y2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(2, 403, 67.5 + x2 + 10.6 - 2.1, 170 + 10.6 + y2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
 
