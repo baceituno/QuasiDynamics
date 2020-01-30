@@ -1,12 +1,12 @@
 clear all; close all; clc;
 
 % finds a task
-task = square_line();
+task = square_picking();
 
 % infers the primitive
 pre = MixedIntegerContactPlacementProblem(task,1,2)
 pre.McCormick = 1;
-pre.M = 4;
+pre.M = 12;
 
 % animation_shape(task,false)
 % pause()

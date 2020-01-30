@@ -3,11 +3,11 @@ rosshutdown();
 rosinit();
 help = ROSHelper();
 
-help.setHomePlanar()
+help.setHomeSagittal()
 disp('home')
 pause()
 
-ik = load('./data/ik/ik_rot.mat').ik;
+ik = load('./data/ik/ik_grasp.mat').ik;
 T = length(ik);
 
 disp('place object pls :)')
@@ -25,7 +25,6 @@ for t = 2:T
 end
 
 pause()
-
 for t = T:-1:1
     help.setSimJoints(ik{t}.ik1,ik{t}.ik2);
     pause(0.1)

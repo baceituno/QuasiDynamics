@@ -7,7 +7,7 @@ help.setHomePlanar()
 disp('home')
 pause()
 
-ik = load('./data/ik/ik_rot.mat').ik;
+ik = load('./data/ik/ik_curv.mat').ik;
 T = length(ik);
 
 disp('place object pls :)')
@@ -20,13 +20,6 @@ pause()
 help.setSimJoints(ik{1}.ik1,ik{1}.ik2);
 disp('executing...')
 for t = 2:T
-    help.setSimJoints(ik{t}.ik1,ik{t}.ik2);
-    pause(0.1)
-end
-
-pause()
-
-for t = T:-1:1
     help.setSimJoints(ik{t}.ik1,ik{t}.ik2);
     pause(0.1)
 end

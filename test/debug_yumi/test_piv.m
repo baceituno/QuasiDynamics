@@ -8,7 +8,7 @@ help.setHomeSagittal()
 disp('home')
 pause()
 
-p = load('./data/mats/sq_piv.mat').traj*500;
+p = load('./data/mats/sq_grasp.mat').traj*700;
 N_c = size(p,2);
 T = size(p,4);
 
@@ -28,12 +28,15 @@ end
 pause()
 
 % brings hands down
-for c = 1:N_c
-    help.setdXYZ(c,0,0,-50)
-end
+help.adddXYZ(-1,-4,-54,1,4,-54)
+% for c = 1:N_c
+%     help.setdXYZ(c,0,0,-54)
+% end
 
 disp('place object pls :)')
 pause()
+help.adddXYZ(0,10,0,0,-10,0)
+pause(0.1)
 
 for t = 1:T-1
     for c = N_c:-1:1

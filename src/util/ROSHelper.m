@@ -75,6 +75,31 @@ classdef ROSHelper < handle
 			out = call(serv, req);
 		end
 
+		function out = setSimJoints(obj, ik1, ik2)
+			obj.clearJointBuffers();
+			obj.addJointBuffer(1, ik1.J1, ik1.J2, ik1.J3, ik1.J4, ik1.J5, ik1.J6, ik1.J7);
+			obj.addJointBuffer(2, ik2.J1, ik2.J2, ik2.J3, ik2.J4, ik2.J5, ik2.J6, ik2.J7);
+			% Twice because joint buffers require at least 2 orders (dummy)
+			obj.addJointBuffer(1, ik1.J1, ik1.J2, ik1.J3, ik1.J4, ik1.J5, ik1.J6, ik1.J7);
+			obj.addJointBuffer(2, ik2.J1, ik2.J2, ik2.J3, ik2.J4, ik2.J5, ik2.J6, ik2.J7);
+			obj.executeSimJointBuffers();
+		end
+
+
+		function out = setSimTraj(obj, ik)
+			obj.clearJointBuffers();
+			for t = 1:length(ik)
+				ik1 = ik{t}.ik1;
+				ik2 = ik{t}.ik2;
+				obj.addJointBuffer(1, ik1.J1, ik1.J2, ik1.J3, ik1.J4, ik1.J5, ik1.J6, ik1.J7);
+				obj.addJointBuffer(2, ik2.J1, ik2.J2, ik2.J3, ik2.J4, ik2.J5, ik2.J6, ik2.J7);
+				% Twice because joint buffers require at least 2 orders (dummy)
+				% obj.addJointBuffer(1, ik1.J1, ik1.J2, ik1.J3, ik1.J4, ik1.J5, ik1.J6, ik1.J7);
+				% obj.addJointBuffer(2, ik2.J1, ik2.J2, ik2.J3, ik2.J4, ik2.J5, ik2.J6, ik2.J7);
+			end
+			obj.executeSimJointBuffers();
+		end
+
 		function out = addBuffer(obj, arm, x, y, z, q0, qx, qy, qz)
 			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_AddBuffer'));
 			req = rosmessage(serv);
@@ -85,7 +110,7 @@ classdef ROSHelper < handle
 			req.Qx = qx;
 			req.Qy = qy;
 			req.Qz = qz;
-% 			req.Handpose = handpose;
+			req.Handpose = 0.0;
 			out = call(serv, req);
 		end
 
@@ -154,6 +179,19 @@ classdef ROSHelper < handle
 			ret = call(serv, rosmessage(serv));
 		end
 
+		function ret = getIK(obj, arm, x, y, z, q0, qx, qy, qz, ang)
+			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_GetIK'));
+			req.X = x;
+			req.Y = y;
+			req.Z = z;
+			req.Q0 = q0;
+			req.Qx = qx;
+			req.Qy = qy;
+			req.Qz = qz;
+			req.ang = ang;
+			ret = call(serv, rosmessage(serv));
+		end
+
 		function pose = getHandPose(obj, arm)
 			serv = rossvcclient(strcat('/robot', num2str(arm, '%d'), '_HandGetPose'));
 			ret = call(serv, rosmessage(serv));
@@ -172,7 +210,7 @@ classdef ROSHelper < handle
 		end
 
 		% Computations
-	function [qw, qx, qy, qz] = quatFromAngleRespectToX(obj, arm, theta)
+		function [qw, qx, qy, qz] = quatFromAngleRespectToX(obj, arm, theta)
 			q1 = quaternion([0.0, 0.0, 1.0, 0.0]);
 			q2 = quaternion([cos(-theta/2), 0.0, 0.0, sin(-theta/2)]);
 			[qw, qx, qy, qz] = parts(q1*q2);
@@ -195,6 +233,25 @@ classdef ROSHelper < handle
 				obj.angleZL = theta;
 			end
 			[qw, qx, qy, qz] = parts(q1*q2);
+		end
+
+		function setSimDXYZ(obj,x1,y1,z1,x2,y2,z2)
+			obj.clearJointBuffers();
+			cart1 = obj.getCartesian(1);
+			cart2 = obj.getCartesian(2);
+
+			arm_ang = 100;
+
+			ik1 = obj.getIK(cart1.X+x1,cart1.Y+y1,cart1.Z+z1,cart1.Q0,cart1.Qx,cart1.Qy,cart1.Qz,arm_ang)
+			ik2 = obj.getIK(cart1.X+x1,cart1.Y+y1,cart1.Z+z1,cart1.Q0,cart1.Qx,cart1.Qy,cart1.Qz,-arm_ang)
+
+			obj.clearJointBuffers();
+			obj.addJointBuffer(1, ik1.j1, ik1.j2, ik1.j3, ik1.j4, ik1.j5, ik1.j6, ik1.j7);
+			obj.addJointBuffer(2, ik2.j1, ik2.j2, ik2.j3, ik2.j4, ik2.j5, ik2.j6, ik2.j7);
+			% Twice because joint buffers require at least 2 orders (dummy)
+			obj.addJointBuffer(1, ik1.j1, ik1.j2, ik1.j3, ik1.j4, ik1.j5, ik1.j6, ik1.j7);
+			obj.addJointBuffer(2, ik2.j1, ik2.j2, ik2.j3, ik2.j4, ik2.j5, ik2.j6, ik2.j7);
+			obj.executeSimJointBuffers();
 		end
 
 		% Specific motions
@@ -250,9 +307,9 @@ classdef ROSHelper < handle
 
 		function out = setInitialPositionSagittal(obj, x1, y1, x2, y2)
 			getret = obj.getCartesian(1);
-			out = obj.setCartesian(1, 392, -67.5 + x1 - 10.6 + 1.1, 175 + 10.6 + y1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(1, 392, -67.5 + x1 - 11.6 + 1.1, 175 + 10.6 + y1, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 			getret = obj.getCartesian(2);
-			out = obj.setCartesian(2, 403, 67.5 + x2 + 10.6 - 2.1, 170 + 10.6 + y2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
+			out = obj.setCartesian(2, 403, 67.5 + x2 + 9.6 - 2.1, 170 + 10.6 + y2, getret.Q0, getret.Qx, getret.Qy, getret.Qz);
 		end
 
 
@@ -280,8 +337,8 @@ classdef ROSHelper < handle
 			obj.clearBuffers();
 			get1 = obj.getCartesian(1);
 			get2 = obj.getCartesian(2);
-			obj.addBuffer(1, get1.X+dx, get1.Y+dy, get1.Z+dz, get1.Q0, get1.Qx, get1.Qy, get1.Qz, 0.0);
-			obj.addBuffer(2, get2.X+dx, get2.Y+dy, get2.Z+dz, get2.Q0, get2.Qx, get2.Qy, get2.Qz, 0.0);
+			obj.addBuffer(1, get1.X+dx, get1.Y+dy, get1.Z+dz, get1.Q0, get1.Qx, get1.Qy, get1.Qz);
+			obj.addBuffer(2, get2.X+dx, get2.Y+dy, get2.Z+dz, get2.Q0, get2.Qx, get2.Qy, get2.Qz);
 			obj.executeSimBuffers(false);
 		end
 
