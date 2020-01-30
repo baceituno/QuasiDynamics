@@ -8,7 +8,7 @@ help.setHomeSagittal()
 disp('home')
 pause()
 
-p = load('./data/mats/sq_piv.mat').traj*500;
+p = load('./data/mats/sq_grasp.mat').traj*500;
 N_c = size(p,2);
 T = size(p,4);
 
@@ -28,7 +28,7 @@ end
 pause()
 
 % brings hands down
-help.adddXYZ(-1,1,-54,1,-1,-54)
+help.adddXYZ(-1,4,-54,1,-4,-54)
 
 ik = {};
 ik{1}.ik1 = help.getJoints(1);
