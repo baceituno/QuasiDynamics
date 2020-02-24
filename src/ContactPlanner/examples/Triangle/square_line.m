@@ -24,8 +24,8 @@ classdef square_line
 			% trajectory
 
 			x = linspace(0,0,5);
-			y = linspace(0,0,5);
-			th = [linspace(0,-pi/2,5)];
+			y = linspace(0,0.1,5);
+			th = [linspace(0,0*pi/6,5)];
 			NT = size(th,2);
 
 			obj.traj.r = [x;y;th];

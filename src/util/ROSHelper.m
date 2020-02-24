@@ -74,7 +74,7 @@ classdef ROSHelper < handle
 			req.J7 = j7;
 			out = call(serv, req);
 		end
-
+ 
 		function out = setSimJoints(obj, ik1, ik2)
 			obj.clearJointBuffers();
 			obj.addJointBuffer(1, ik1.J1, ik1.J2, ik1.J3, ik1.J4, ik1.J5, ik1.J6, ik1.J7);
@@ -83,6 +83,44 @@ classdef ROSHelper < handle
 			obj.addJointBuffer(1, ik1.J1, ik1.J2, ik1.J3, ik1.J4, ik1.J5, ik1.J6, ik1.J7);
 			obj.addJointBuffer(2, ik2.J1, ik2.J2, ik2.J3, ik2.J4, ik2.J5, ik2.J6, ik2.J7);
 			obj.executeSimJointBuffers();
+		end
+
+		function out = setSimJointsTraj(obj, ik, Acc)
+			if nargin < 3; Acc = 10; end
+			for t = 1:length(ik)-1
+				% at time t
+				ik1t = ik{t}.ik2;
+				ik2t = ik{t}.ik1;
+
+				% at time t+1
+				ik1t1 = ik{t+1}.ik2;
+				ik2t1 = ik{t+1}.ik1;
+				
+				obj.clearJointBuffers();
+
+				for k = 0:Acc
+					obj.addJointBuffer(1, ((Acc-k)*ik1t.J1 + k*ik1t1.J1)/Acc, ((Acc-k)*ik1t.J2 + k*ik1t1.J2)/Acc,... 
+										  ((Acc-k)*ik1t.J3 + k*ik1t1.J3)/Acc, ((Acc-k)*ik1t.J4 + k*ik1t1.J4)/Acc,... 
+										  ((Acc-k)*ik1t.J5 + k*ik1t1.J5)/Acc, ((Acc-k)*ik1t.J6 + k*ik1t1.J6)/Acc,...
+										  ((Acc-k)*ik1t.J7 + k*ik1t1.J7)/Acc);
+
+					obj.addJointBuffer(2, ((Acc-k)*ik2t.J1 + k*ik2t1.J1)/Acc, ((Acc-k)*ik2t.J2 + k*ik2t1.J2)/Acc,... 
+										  ((Acc-k)*ik2t.J3 + k*ik2t1.J3)/Acc, ((Acc-k)*ik2t.J4 + k*ik2t1.J4)/Acc,... 
+										  ((Acc-k)*ik2t.J5 + k*ik2t1.J5)/Acc, ((Acc-k)*ik2t.J6 + k*ik2t1.J6)/Acc,...
+										  ((Acc-k)*ik2t.J7 + k*ik2t1.J7)/Acc);
+					% Twice because joint buffers require at least 2 orders (dummy)
+					obj.addJointBuffer(1, ((Acc-k)*ik1t.J1 + k*ik1t1.J1)/Acc, ((Acc-k)*ik1t.J2 + k*ik1t1.J2)/Acc,... 
+										  ((Acc-k)*ik1t.J3 + k*ik1t1.J3)/Acc, ((Acc-k)*ik1t.J4 + k*ik1t1.J4)/Acc,... 
+										  ((Acc-k)*ik1t.J5 + k*ik1t1.J5)/Acc, ((Acc-k)*ik1t.J6 + k*ik1t1.J6)/Acc,...
+										  ((Acc-k)*ik1t.J7 + k*ik1t1.J7)/Acc);
+					
+					obj.addJointBuffer(2, ((Acc-k)*ik2t.J1 + k*ik2t1.J1)/Acc, ((Acc-k)*ik2t.J2 + k*ik2t1.J2)/Acc,... 
+										  ((Acc-k)*ik2t.J3 + k*ik2t1.J3)/Acc, ((Acc-k)*ik2t.J4 + k*ik2t1.J4)/Acc,... 
+										  ((Acc-k)*ik2t.J5 + k*ik2t1.J5)/Acc, ((Acc-k)*ik2t.J6 + k*ik2t1.J6)/Acc,...
+										  ((Acc-k)*ik2t.J7 + k*ik2t1.J7)/Acc);
+				end
+				obj.executeSimJointBuffers();
+			end
 		end
 
 

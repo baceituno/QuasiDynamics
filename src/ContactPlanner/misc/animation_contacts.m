@@ -254,7 +254,7 @@ function animation_contacts(object, plan, vid_on)
 
 		xlim([-0.2,0.2]);
 		ylim([-0.2,0.2]);
-		set(gca,'color',[0 0 0])
+		set(gca,'color',[0.2 0.2 0.2])
 
 		hold on;
 		pause(0.001);

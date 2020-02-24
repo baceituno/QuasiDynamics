@@ -1,12 +1,12 @@
 clear all; close all; clc;
 
 % finds a task
-task = square_picking();
+task = square_line();
 
 % infers the primitive
-pre = MixedIntegerContactPlacementProblem(task,1,2)
+pre = MixedIntegerContactPlacementProblem(task,1,1)
 pre.McCormick = 1;
-pre.M = 12;
+pre.M = 4;
 
 % animation_shape(task,false)
 % pause()
@@ -21,6 +21,6 @@ pre = pre.solve();
 toc(c)
 
 % animates and saves the video
-animation_contacts(task,pre,false)
+animation_contacts(task,pre,true)
 
 % SCS solver for MIQP
