@@ -61,15 +61,4 @@ display('Plan executed. Press any key to go home.')
 pause()
 
 helper.clearBuffers();
-for t = 1
-    p1 = 10*planner.vars.p.value(:,3,t);
-    p2 = 10*planner.vars.p.value(:,4,t);
-    p3 = 10*planner.vars.p.value(:,1,t);
-    p4 = 10*planner.vars.p.value(:,2,t);
-    helper.addFingersToBuffer(p1, p2, p3, p4);
-end
-
-helper.executeSimBuffers(true);
-helper.setSimDeltaXYZ(0,0,18);
-helper.executeSimBuffers(true);
-pause()
+helper.setSimJointsTraj()
